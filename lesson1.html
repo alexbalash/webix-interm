@@ -1,0 +1,143 @@
+<!doctype html>
+
+<head>
+	<meta charset="utf-8">
+	<title> Test DataTable</title>
+	<script type="text/javascript" src="https://cdn.webix.com/edge/webix.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.webix.com/edge/webix.css">
+	<style type="text/css">
+        .webix_el_button.asc button {
+            background-color:hotpink !important
+        }
+        .webix_el_button.off button{
+background-color: rgb(93, 224, 99) !important
+        }
+        .webix_el_button.desc button{
+background-color:yellow !important
+        }
+    </style>
+</head>
+
+<body>
+	<div id="test"></div>
+	<script type="text/javascript" charset="utf-8">
+
+		let films_dataset = [
+			{ id: 1, title: "The Shawshank Redemption", year: 1994, votes: 678790, rating: 9.2, rank: 1 },
+			{ id: 2, title: "The Godfather", year: 1972, votes: 511495, rating: 9.2, rank: 2 },
+			{ id: 3, title: "The Godfather: Part II", year: 1974, votes: 319352, rating: 9.0, rank: 3 },
+			{ id: 4, title: "The Good, the Bad and the Ugly", year: 1966, votes: 213030, rating: 8.9, rank: 4 },
+			{ id: 5, title: "My Fair Lady", year: 1964, votes: 533848, rating: 8.9, rank: 5 },
+			{ id: 6, title: "12 Angry Men", year: 1957, votes: 164558, rating: 8.9, rank: 6 }
+		];
+        webix.protoUI({
+	name:"threestatesbutton",
+    $cssName:"button",
+  defaults:{
+    states:{0:"Off",1:"SortAsc",2:"Sort Desc"}
+  },
+  $init(config){
+    this.$view.className += " off";
+    config.value = config.states[config.state || 0];
+    
+    this.attachEvent("onItemClick", function(){
+      ++config.state;
+      if(config.state > 2){
+        config.state = 0;
+      }
+      
+      this.config.value = config.states[config.state];
+	  this.refresh();
+      this.callEvent("onStateChange", [config.state]);
+      if(config.state == 0){
+            webix.html.removeCss(this.$view,"desc")
+            webix.html.addCss(this.$view,"off")
+        }
+        else if (config.state == 1){
+            webix.html.removeCss(this.$view,"off")
+            webix.html.addCss(this.$view,"asc")
+           
+        }
+        else if (config.state == 2){
+            webix.html.removeCss(this.$view,"asc")
+            webix.html.addCss(this.$view,"desc")
+        }
+       
+    });
+  }
+}, webix.ui.button);
+
+webix.protoUI({
+	name:"formControl",
+    
+  $init(config){
+    config.elements = [ {rows: [{ view: "text" },
+					{ view: "text"},
+					{ view: "text"},]},
+                   {cols:[ { view: "button", value: "Cancel"},
+                    { view: "button", value: "Save"},]}
+                   
+    ]
+  },
+  name_setter:function(arr){
+        for(let i = 0; i<arr.length; i++){
+config.elements[i].name = arr[i];
+        }
+    },
+}, webix.ui.form);
+
+		webix.ui({
+            rows:[
+            { view:"threestatesbutton",
+            id:"threestatesbutton", 
+            states:{0:"Off",1:"SortAsc",2:"Sort Desc"},
+   state:0,
+   on:{
+	onStateChange:function(state){
+        if(state == 0){
+            $$("film_list").sort({
+          by: "#id#",
+          dir: "asc",
+          as: "string",
+        });
+        }
+        else if (state == 1){
+        $$("film_list").sort({
+          by: "#title#",
+          dir: "asc",
+          as: "string",
+        });
+        }
+        else if (state == 2){
+            $$("film_list").sort({
+          by: "#title#",
+          dir: "desc",
+          as: "string",
+        });
+        }
+    }
+   }
+},
+      { view: "list",
+			id: "film_list",
+			data: films_dataset,
+			template: "#title#, #year#, #votes#, #rating#, #rank#",
+			select: true,
+			width: 250,
+			on: {
+				onAfterSelect: function (id) {
+					$$(id).show();
+				}
+			}, },
+
+            { view:"formControl",id:"formControl",fields:["one","two"] }
+
+    ],
+   
+        }
+		);
+		$$("formControl").name_setter($$("formControl").fields);
+	</script>
+</body>
+
+</html>
