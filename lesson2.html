@@ -1,0 +1,64 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title> Test DataTable</title>
+    <script type="text/javascript" src="https://cdn.webix.com/edge/webix.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.webix.com/edge/webix.css">
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <div id="test"></div>
+    <script type="text/javascript" charset="utf-8">
+
+        let films_dataset = [
+            { id: 1, title: "The Shawshank Redemption", year: 1994, votes: 678790, rating: 9.2, rank: 1 },
+            { id: 2, title: "The Godfather", year: 1972, votes: 511495, rating: 9.2, rank: 2 },
+            { id: 3, title: "The Godfather: Part II", year: 1974, votes: 319352, rating: 9.0, rank: 3 },
+            { id: 4, title: "The Good, the Bad and the Ugly", year: 1966, votes: 213030, rating: 8.9, rank: 4 },
+            { id: 5, title: "My Fair Lady", year: 1964, votes: 533848, rating: 8.9, rank: 5 },
+            { id: 6, title: "12 Angry Men", year: 1957, votes: 164558, rating: 8.9, rank: 6 }
+        ];
+       
+        webix.ui({
+            cols:[{},
+                {gravity:2, rows:[
+        {},
+        { 
+          view:"datatable", 
+          id:'film_datatable',
+          columns:[
+            { id:"id", header:"", width:50},
+            { id:"title", header:"Title", fillspace:3},
+            { id:"year", header:"Year", fillspace:1},
+            { id:"votes", header:"Votes", fillspace:1},
+            { id:"rating", header:"Rating", fillspace:2}
+          ], 
+          scrollX:false,
+          scrollY:false,
+          data:films_dataset,
+          },
+        {}
+      ]
+           },
+                {}]
+        },
+        
+        );
+        $$("film_datatable").attachEvent("onResize", function(pos){
+            const hide = this.$width < 500 ;
+  if (hide) {
+    if (this.isColumnVisible("rating")) this.hideColumn("rating");
+    if (this.isColumnVisible("votes")) this.hideColumn("votes");
+  } else {
+    if (!this.isColumnVisible("rating")) this.showColumn("rating");
+    if (!this.isColumnVisible("votes")) this.showColumn("votes");
+  }
+})
+
+    </script>
+</body>
+
+</html>
