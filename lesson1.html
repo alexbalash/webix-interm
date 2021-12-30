@@ -32,6 +32,9 @@
             { id: 5, title: "My Fair Lady", year: 1964, votes: 533848, rating: 8.9, rank: 5 },
             { id: 6, title: "12 Angry Men", year: 1957, votes: 164558, rating: 8.9, rank: 6 }
         ];
+        const stateStyles = {
+            0: "off", 1: "desc", 2: "asc"
+        };
         webix.protoUI({
             name: "threestatesbutton",
             $cssName: "button",
@@ -41,52 +44,48 @@
             $init(config) {
                 this.$view.className += " off";
                 config.value = config.states[config.state || 0];
-
                 this.attachEvent("onItemClick", function () {
+                    webix.html.removeCss(this.$view, stateStyles[config.state])
                     ++config.state;
                     if (config.state > 2) {
                         config.state = 0;
                     }
-
                     this.config.value = config.states[config.state];
                     this.refresh();
                     this.callEvent("onStateChange", [config.state]);
-                    if (config.state == 0) {
-                        webix.html.removeCss(this.$view, "desc")
-                        webix.html.addCss(this.$view, "off")
-                    }
-                    else if (config.state == 1) {
-                        webix.html.removeCss(this.$view, "off")
-                        webix.html.addCss(this.$view, "asc")
-
-                    }
-                    else if (config.state == 2) {
-                        webix.html.removeCss(this.$view, "asc")
-                        webix.html.addCss(this.$view, "desc")
-                    }
-
+                    webix.html.addCss(this.$view, stateStyles[config.state])
                 });
             }
         }, webix.ui.button);
 
         webix.protoUI({
             name: "formControl",
-
             $init(config) {
-                config.elements = [{
-                    rows: [{ view: "text" },
-                    { view: "text" },
-                    { view: "text" },]
-                },
-                {
-                    cols: [{ view: "button", value: "Cancel" },
-                    { view: "button", value: "Save" },]
+                config.elements = [];
+                for (let field of config.fields) {
+                    config.elements.push({
+                        view: "text",
+                        label: field
+                    });
                 }
+                config.elements.push({
+                    cols: [
+                        { view: "button", value: "Cancel", click: this.cancelAction },
+                        { view: "button", value: "Save", click: config.saveAction || this.saveDefault }
+                    ]
+                })
+            },
+            cancelAction: function () {
+                console.log(3);
+            },
+            saveDefault: function () {
+                console.log(2);
+            },
 
-                ]
-            }
         }, webix.ui.form);
-
+        function my_func() {
+            console.log(1)
+        }
         webix.ui({
             rows: [
                 {
@@ -125,16 +124,9 @@
                     id: "film_list",
                     data: films_dataset,
                     template: "#title#, #year#, #votes#, #rating#, #rank#",
-                    select: true,
-                    width: 250,
-                    on: {
-                        onAfterSelect: function (id) {
-                            $$(id).show();
-                        }
-                    },
                 },
 
-                { view: "formControl", id: "formControl", fields: ["one", "two"] }
+                { view: "formControl", id: "formControl", fields: ["one", "two"], saveAction:my_func }
 
             ],
 
