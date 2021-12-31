@@ -1,0 +1,69 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title> Test DataTable</title>
+    <script type="text/javascript" src="https://cdn.webix.com/edge/webix.js"></script>
+    <script type="text/javascript" src="./data.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.webix.com/edge/webix.css">
+    <style type="text/css">
+        .webix_cell .colored {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="test"></div>
+    <script type="text/javascript" charset="utf-8">
+        webix.DataDriver.myJSON = webix.extend({
+            getRecords: function (data) {
+                return data.records;
+            }
+        }, webix.DataDriver.json);
+
+        webix.ui({
+            rows: [
+                {
+                    view: "datatable",
+                    datatype: "myJSON",
+                    data: data,
+                    scheme: {
+                        $init: function (obj) {
+                            obj.registered = webix.i18n.parseFormatDate(obj.registered);
+                        }
+                    },
+                    columns: [
+                        { id: "id", header: "#" },
+                        { id: "isActive", header: { content: "masterCheckbox" }, template: "{common.checkbox()}" },
+                        { id: "picture", header: "<span class='webix_icon wxi-user'></span>", template: "<img src='#picture#'/>" },
+                        {
+                            header: "Name", template: function (obj, common) {
+                                if (obj.lname) {
+                                    return obj.fname + "" + obj.lname
+                                }
+                                else return obj.fname
+
+                            }
+                        },
+                        { id: "age", header: "Age" },
+                        { id: "eyeColor", header: "Eye", template: "<div class='colored' style='background-color:#eyeColor#'></div>" },
+                        { id: "company", header: "Company" },
+                        { id: "phone", header: "Phone" },
+                        { id: "address", header: "Address", fillspace: true },
+                        { id: "balance", header: "Balance", format: webix.i18n.priceFormat },
+                        { id: "registered", header: "Date", format: webix.i18n.fullDateFormatStr },
+                        {
+                            id: "friends", header: "Refs", template: function (obj, common) {
+                                return obj.friends.length
+
+                            }
+                        }
+                    ]
+                }]
+        });
+    </script>
+</body>
+
+</html>
