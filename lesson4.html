@@ -58,7 +58,7 @@
                                             } else if (typeof obj[field] === "number") {
                                                 found = obj[field] == input;
                                             } else if (obj[field] instanceof Date) {
-                                                webix.i18n.fullDateFormatStr(obj[field]).indexOf(input) !== -1;
+                                                found = webix.i18n.fullDateFormatStr(obj[field]).indexOf(input) !== -1;
                                             }
 
                                             if (found) return found;
@@ -83,10 +83,7 @@
                 scheme: {
                     $init: function (obj) {
                         obj.registered = webix.i18n.parseFormatDate(obj.registered);
-                        if (obj.lname) {
-                            obj.name = obj.fname + "" + obj.lname
-                        }
-                        else obj.name = obj.fname
+                        obj.name = obj.fname + (obj.lname ?  " " + obj.lname : "");
                     }
                 },
                 onClick: {
@@ -101,7 +98,6 @@
                             let parts = state.value.split(" ");
                             editor.fname = parts[0];
                             editor.lname = parts.slice(1).join();
-                            console.log(editor.lname)
                         }
 
                     },
