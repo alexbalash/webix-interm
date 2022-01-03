@@ -1,0 +1,310 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title> Test DataTable</title>
+    <script type="text/javascript" src="https://cdn.webix.com/edge/webix.js"></script>
+    <script type="text/javascript" src="./data.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.webix.com/edge/webix.css">
+    <style type="text/css">
+        .webix_cell .colored {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="test"></div>
+    <script type="text/javascript" charset="utf-8">
+        let dataX = {
+  collection:"Users",
+  records:[
+  {
+    "id": 1,
+    "isActive": true,
+    "balance": 1721.87,
+    "picture": "http://placehold.it/32x32",
+    "age": 28,
+    "eyeColor": "brown",
+    "fname": "Alice ",
+   "lname": "Brown",
+    "gender": "female",
+    "company": "EARTHPURE",
+    "email": "alicebrown@earthpure.com",
+    "phone": "+1 (972) 551-3654",
+    "address": "790 Richardson Street, Tilleda, Arizona, 4325",
+    "registered": "2015-07-27 01:13:41",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Silvia Steele"
+      },
+      {
+        "id": 1,
+        "name": "Charlotte Richard"
+      },
+      {
+        "id": 2,
+        "name": "Sutton Kemp"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "isActive": true,
+    "balance": 1564.43,
+    "picture": "http://placehold.it/32x32",
+    "age": 38,
+    "eyeColor": "brown",
+    "fname": "Antoinette ",
+    "lname": "Vaughn",
+    "gender": "female",
+    "company": "ZOID",
+    "email": "antoinettevaughn@zoid.com",
+    "phone": "+1 (927) 449-2039",
+    "address": "803 Nautilus Avenue, Stewartville, Rhode Island, 9651",
+    "registered": "2017-12-01 09:43:28",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Sanchez Pope"
+      },
+      {
+        "id": 1,
+        "name": "Kramer Mcleod"
+      },
+      {
+        "id": 2,
+        "name": "Celina Fitzpatrick"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "isActive": false,
+    "balance": 3835.06,
+    "picture": "http://placehold.it/32x32",
+    "age": 20,
+    "eyeColor": "brown",
+    "fname": "Stevens ",
+    "gender": "male",
+    "company": "MEDALERT",
+    "email": "stevensortega@medalert.com",
+    "phone": "+1 (817) 429-2644",
+    "address": "217 Revere Place, Harborton, Texas, 960",
+    "registered": "2016-03-05 07:33:24",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Inez Orr"
+      },
+      {
+        "id": 1,
+        "name": "Emma Shannon"
+      },
+      {
+        "id": 2,
+        "name": "Andrea Holman"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "isActive": true,
+    "balance": 2078.11,
+    "picture": "http://placehold.it/32x32",
+    "age": 20,
+    "eyeColor": "brown",
+    "fname": "Garrett ",
+    "lname": "Bray",
+    "gender": "male",
+    "company": "MAINELAND",
+    "email": "garrettbray@maineland.com",
+    "phone": "+1 (894) 524-2102",
+    "address": "405 Virginia Place, Layhill, Iowa, 1088",
+    "registered": "2018-02-11 08:29:28",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Barlow Mason"
+      },
+      {
+        "id": 1,
+        "name": "Bradley Solomon"
+      },
+      {
+        "id": 2,
+        "name": "Colon Ray"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "isActive": true,
+    "balance": 2397,
+    "picture": "http://placehold.it/32x32",
+    "age": 33,
+    "eyeColor": "green",
+    "fname": "Barrera ",
+    "lname": "Peters",
+    "gender": "male",
+    "company": "DATACATOR",
+    "email": "barrerapeters@datacator.com",
+    "phone": "+1 (807) 441-3714",
+    "address": "323 Chapel Street, Cowiche, California, 4383",
+    "registered": "2018-01-12 12:50:20",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Twila Levine"
+      },
+      {
+        "id": 1,
+        "name": "Dickerson Kim"
+      },
+      {
+        "id": 2,
+        "name": "Melanie Duncan"
+      }
+    ]
+  }
+]};
+
+
+        webix.DataDriver.myJSON = webix.extend({
+            getRecords: function (data) {
+                return data.records;
+            }
+        }, webix.DataDriver.json);
+        let users = new webix.DataCollection({
+            data:dataX,
+            datatype: "myJSON",
+            scheme: {
+                $init: function (obj) {
+                    obj.registered = webix.i18n.parseFormatDate(obj.registered);
+                    obj.name = obj.fname + (obj.lname ? " " + obj.lname : "");
+                }
+            },
+
+        });
+
+        webix.ui({
+            rows: [{
+                cols: [
+                    {
+                        view: "button", value: "Add", width: 100, click: function () {
+                            users.add({
+                                "isActive": true,
+                                "eyeColor": "blue",
+                                "fname": "Allon",
+                                "picture": "http://placehold.it/32x32",
+                                "registered": new Date(),
+                                "friends": [],
+                                "balance": 1631.09,
+                                "age": 56,
+                                "phone": "+1 (983) 551-3630",
+                                "address": "700 Xolp Street, Ders, Texas, 4764",
+                                "company": "ASAA"
+                            });
+                        }
+                    },
+                    {
+                        view: "text",
+                        on: {
+                            onTimedKeyPress() {
+                                const input = this.getValue().toLowerCase();
+
+                                $$("data").filter(function (obj) {
+                                    let found = false;
+                                    for (let field in obj) {
+                                        if (obj[field]) {
+                                            if (typeof obj[field] === "string") {
+                                                found = obj[field].toLowerCase().indexOf(input) !== -1;
+                                            } else if (typeof obj[field] === "number") {
+                                                found = obj[field] == input;
+                                            } else if (obj[field] instanceof Date) {
+                                                found = webix.i18n.fullDateFormatStr(obj[field]).indexOf(input) !== -1;
+                                            }
+
+                                            if (found) return found;
+                                        }
+                                    }
+                                    return found;
+                                });
+                            }
+                        }
+                    },
+                ]
+            },
+            {
+                view: "datatable",
+                datatype: "myJSON",
+                id: "data",
+
+                select: true,
+                drag: true,
+                editable: true,
+                editaction: "dblclick",
+                onClick: {
+                    "wxi-trash": function (e, id) {
+                        users.remove(id);
+                        return false;
+                    },
+                },
+                on: {
+                    onAfterEditStop(state, editor, ignoreUpdate) {
+                        if (editor.column == "name") {
+                            let parts = state.value.split(" ");
+                            users.fname = parts[0];
+                            users.lname = parts.slice(1).join();
+                        }
+
+                    },
+                    onBeforeEditStop(state, editor, ignoreUpdate) {
+                        if (editor.column == "name" && state.value == "") {
+                            return false
+                        }
+
+                    },
+                },
+                columns: [
+                    { id: "id", header: "#", sort: "int" },
+                    { id: "isActive", header: { content: "masterCheckbox" }, template: "{common.checkbox()}" },
+                    { id: "picture", header: "<span class='webix_icon wxi-user'></span>", template: "<img src='#picture#'/>" },
+                    { id: "name", header: "Name", sort: "text", editor: "text", },
+                    { id: "age", header: "Age", sort: "int", editor: "text" },
+                    { id: "eyeColor", header: "Eye", sort: "text", editor: "color", template: "<div class='colored' style='background-color:#eyeColor#'></div>" },
+                    { id: "company", header: "Company", sort: "string", editor: "text" },
+                    { id: "phone", header: "Phone", sort: "string", editor: "text" },
+                    { id: "address", header: "Address", fillspace: true, sort: "string", editor: "text" },
+                    { id: "balance", header: "Balance", format: webix.i18n.priceFormat, sort: "int", editor: "text" },
+                    { id: "registered", header: "Date", format: webix.i18n.fullDateFormatStr, sort: "date", editor: "date" },
+                    {
+                        id: "friends", header: "Refs", template: function (obj, common) {
+                            return obj.friends.length
+
+                        }
+                    },
+                    { id: "Delete", template: "{common.trashIcon()}" },
+                ]
+            },
+            {
+                view: "dataview",
+                id: "list",
+                template:
+                    "#name#, #age#, from #company#. Phone : #phone#",
+                    type:{
+    height:50, width:270
+  },
+                  
+
+            }]
+
+        });
+        $$("data").sync(users);
+        $$("list").sync(users);
+    </script>
+</body>
+
+</html>
