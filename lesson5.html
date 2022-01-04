@@ -1,0 +1,81 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <title> Test DataTable</title>
+    <script type="text/javascript" src="https://cdn.webix.com/edge/webix.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.webix.com/edge/webix.css">
+
+    <style type="text/css">
+    </style>
+</head>
+
+<body>
+    <div id="test"></div>
+    <script type="text/javascript" charset="utf-8">
+
+        const buttons = {
+            view: "toolbar", cols: [
+                {},
+                {view: "button", value: "Add Row", click: function () {
+                    $$('dataTable').add({
+        rank:99, title:"New Film111" + webix.uid(),
+        year:"2012", votes:"100"
+      });
+                }},
+                {view: "button", value: "Delete Row", click: function () {
+                    let id = $$('dataTable').getSelectedId();
+                    if (id) $$('dataTable').remove(id);
+                }}
+            ]
+        };
+
+const dataTable = {
+  view:"datatable",
+  id:"dataTable",
+  columns:[
+    { id:"rank",	editor:"text",  header:"", css:"rank",},
+    { id:"title",	editor:"text", header:[ "Film title", { content:"serverFilter" } ] , sort:"server"},
+    { id:"year",	editor:"text",  header:"Released" , sort:"server" },
+    { id:"votes",	editor:"text",  header:"Votes", sort:"server"},
+    { id:"date", header:"Last Modified",fillspace:true, template:function(obj){
+        if(obj.date) return webix.i18n.parseFormatStr(obj.date);
+      return "";
+    }}],
+  select:true, 
+  editable:true, 
+  editaction:"dblclick",
+  save: {
+    url:"rest->//docs.webix.com/samples/server/films",
+    on:{
+      onAfterSync:function(status, text, data){
+        const id = (data && data.id) ? data.id : status.id;
+        webix.message("Record saved: "+id);
+        this.ignore(function(){
+          if($$("dataTable").exists(id))
+            $$("dataTable").updateItem(id, {date:new Date()});
+
+          console.log($$("dataTable").getItem(id));
+        });
+      }
+    }
+  },
+  url:"https://docs.webix.com/samples/server/films_sortfilter",
+  on:{
+    onLoadError:function(xhr){
+        webix.message({type:"error", text:"Data Loading Error"});
+    },
+    
+  }
+};
+
+        webix.ui({
+            rows:[buttons, dataTable]
+        }
+        );
+
+    </script>
+</body>
+
+</html>
